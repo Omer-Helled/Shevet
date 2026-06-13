@@ -8,7 +8,6 @@ import {
   IconX,
   IconBell,
   IconSearch,
-  IconPlus,
   IconMapPin,
   IconRosetteDiscountCheck,
   IconLogout,
@@ -151,10 +150,17 @@ export function AppShell({
             <IconMapPin size={16} stroke={1.75} className="text-brand" />
             תל אביב
           </span>
-          <div className="hidden flex-1 items-center gap-2 rounded-lg bg-surface-2 px-3 py-2 text-sm text-muted sm:flex">
-            <IconSearch size={16} stroke={1.75} />
-            <span>חפש יעד, קהילה או הזדמנות</span>
-          </div>
+          <form
+            action="/search"
+            className="hidden flex-1 items-center gap-2 rounded-lg bg-surface-2 px-3 py-2 text-sm sm:flex"
+          >
+            <IconSearch size={16} stroke={1.75} className="shrink-0 text-muted" />
+            <input
+              name="q"
+              placeholder="חפש יעד, קהילה או הזדמנות"
+              className="w-full bg-transparent text-foreground outline-none placeholder:text-muted"
+            />
+          </form>
           <div className="flex-1 sm:hidden" />
           <button
             type="button"
@@ -164,13 +170,6 @@ export function AppShell({
             <IconBell size={20} stroke={1.75} />
           </button>
           <ThemeToggle />
-          <Link
-            href="/stay/new"
-            className="hidden items-center gap-1.5 rounded-lg bg-brand-strong px-3.5 py-2 text-sm text-white sm:inline-flex"
-          >
-            <IconPlus size={16} stroke={2} />
-            הוסף נכס
-          </Link>
         </header>
 
         <main className="flex-1 pb-24 md:pb-10">{children}</main>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, type ChangeEvent } from "react";
+import { IconPhoto } from "@tabler/icons-react";
 import { createBoardItem, type BoardState } from "../actions";
 import { boardKindLabel, type BoardKind } from "@/lib/mock";
 
@@ -14,9 +15,36 @@ export function BoardForm() {
     createBoardItem,
     undefined,
   );
+  const [preview, setPreview] = useState<string | null>(null);
+
+  function onFile(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    setPreview(f ? URL.createObjectURL(f) : null);
+  }
 
   return (
     <form action={action} className="flex flex-col gap-3">
+      <label className="cursor-pointer">
+        {preview ? (
+          <div
+            className="h-44 w-full rounded-lg border bg-cover bg-center"
+            style={{ backgroundImage: `url(${preview})` }}
+          />
+        ) : (
+          <div className="flex h-44 w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted">
+            <IconPhoto size={28} stroke={1.5} />
+            <span className="text-sm">הוסף תמונה</span>
+          </div>
+        )}
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={onFile}
+          className="hidden"
+        />
+      </label>
+
       <input name="title" placeholder="כותרת" required className={inputCls} />
 
       <select name="kind" defaultValue="volunteer" className={inputCls}>
