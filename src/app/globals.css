@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f6efe2;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --foreground: #2b2926;
+  --muted: #8c8270;
+  --line: rgba(0, 0, 0, 0.1);
+  --brand: #1e6f9f;
+  --brand-strong: #1e6f9f;
+  --brand-ink: #0f4c6b;
+  --brand-soft: #e2eff5;
+  --accent: #c68a3e;
+  --accent-soft: #f4e7ce;
+}
+
+.dark {
+  --background: #0f1419;
+  --surface: #19212a;
+  --surface-2: #232d38;
+  --foreground: #eceae3;
+  --muted: #9c988e;
+  --line: rgba(255, 255, 255, 0.09);
+  --brand: #5ba9d1;
+  --brand-strong: #2c82ae;
+  --brand-ink: #cfe6f2;
+  --brand-soft: rgba(91, 169, 209, 0.16);
+  --accent: #d99e4a;
+  --accent-soft: rgba(217, 158, 74, 0.18);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: var(--font-heebo), system-ui, -apple-system, sans-serif;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
