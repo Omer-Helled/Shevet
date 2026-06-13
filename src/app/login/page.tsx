@@ -1,21 +1,27 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { IconBed, IconHeartHandshake, IconMapPin } from "@tabler/icons-react";
 import { getUser } from "@/lib/auth";
 import { AuthForm } from "./auth-form";
 
 export const dynamic = "force-dynamic";
 
+const features = [
+  { icon: IconBed, label: "חילופי בתים ואירוח ברחבי העולם" },
+  { icon: IconHeartHandshake, label: "התנדבות, עבודה ועזרה בקהילה" },
+  { icon: IconMapPin, label: "גילוי מוקדים וקהילות יהודיות" },
+];
+
 export default async function LoginPage() {
   const user = await getUser();
-  if (user) redirect("/profile");
+  if (user) redirect("/");
 
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-col px-4 py-10">
-      <div className="mb-6 flex flex-col items-center gap-3 text-center">
-        <span className="grid size-12 place-items-center rounded-xl bg-brand-strong text-white">
+    <div className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center px-5 py-10">
+      <div className="mb-6 text-center">
+        <span className="mx-auto mb-3 grid size-14 place-items-center rounded-2xl bg-brand-strong text-white">
           <svg
-            width="26"
-            height="26"
+            width="30"
+            height="30"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -27,24 +33,29 @@ export default async function LoginPage() {
             <path d="M12 21 6 11 18 11Z" />
           </svg>
         </span>
-        <div>
-          <h1 className="text-xl font-medium">ברוכים הבאים ל-Shevet</h1>
-          <p className="mt-1 text-sm text-muted">
-            הקהילה היהודית העולמית — לינה, התנדבות וגילוי קהילות.
-          </p>
-        </div>
+        <h1 className="text-2xl font-medium">Shevet</h1>
+        <p className="mt-1 text-sm text-muted">
+          הקהילה היהודית העולמית — לינה, התנדבות וגילוי קהילות.
+        </p>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-2.5">
+        {features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div key={f.label} className="flex items-center gap-3 text-sm">
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
+                <Icon size={18} stroke={1.75} />
+              </span>
+              {f.label}
+            </div>
+          );
+        })}
       </div>
 
       <div className="rounded-2xl border bg-surface p-5">
         <AuthForm />
       </div>
-
-      <Link
-        href="/"
-        className="mt-4 text-center text-xs text-muted transition-colors hover:text-brand"
-      >
-        חזרה לדף הבית
-      </Link>
     </div>
   );
 }

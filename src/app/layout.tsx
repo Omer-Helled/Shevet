@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Heebo } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/app-shell";
+import { getProfile } from "@/lib/auth";
 
 const heebo = Heebo({
   variable: "--font-heebo",
@@ -26,9 +27,21 @@ export const viewport: Viewport = {
 
 const noFlashTheme = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const profile = await getProfile();
+  const name = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
+  const user = profile
+    ? {
+        name: name || "משתמש",
+        initials: (name || "מש").trim().slice(0, 2),
+        verified: Boolean(profile.is_verified),
+      }
+    : null;
+
   return (
     <html
       lang="he"
@@ -40,7 +53,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: noFlashTheme }} />
       </head>
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
-        <AppShell>{children}</AppShell>
+        <AppShell user={user}>{children}</AppShell>
       </body>
     </html>
   );

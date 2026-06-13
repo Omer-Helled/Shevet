@@ -10,7 +10,6 @@ import {
   IconSearch,
   IconPlus,
   IconMapPin,
-  IconStar,
   IconRosetteDiscountCheck,
   IconLogout,
   IconSettings,
@@ -18,6 +17,8 @@ import {
 import { mainNav, toolNav, drawerGroups, type NavItem } from "@/lib/nav";
 import { ThemeToggle } from "./theme-toggle";
 import { signOut } from "@/app/login/actions";
+
+type AppUser = { name: string; initials: string; verified: boolean } | null;
 
 const cx = (...c: Array<string | false | undefined>) =>
   c.filter(Boolean).join(" ");
@@ -82,11 +83,25 @@ function Logo() {
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: AppUser;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  // Login / auth routes render full-screen, without the app chrome.
+  const bare = pathname === "/login" || pathname.startsWith("/auth");
+  if (bare) return <>{children}</>;
+
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const name = user?.name ?? "משתמש";
+  const initials = user?.initials ?? "מש";
 
   return (
     <div className="flex min-h-dvh">
@@ -113,10 +128,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           href="/profile"
           className="m-3 flex items-center gap-2.5 rounded-lg border p-2.5"
         >
-          <span className="grid size-8 place-items-center rounded-full bg-accent text-sm text-[#2b1b05]">
-            דכ
+          <span className="grid size-8 place-items-center rounded-full bg-accent text-sm text-[#3a1c0e]">
+            {initials}
           </span>
-          <span className="flex-1 truncate text-sm">דוד כהן</span>
+          <span className="flex-1 truncate text-sm">{name}</span>
           <IconSettings size={18} stroke={1.75} className="text-muted" />
         </Link>
       </aside>
@@ -207,20 +222,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3"
               >
-                <span className="grid size-11 place-items-center rounded-full bg-accent text-base text-[#2b1b05]">
-                  דכ
+                <span className="grid size-11 place-items-center rounded-full bg-accent text-base text-[#3a1c0e]">
+                  {initials}
                 </span>
-                <span>
-                  <span className="block text-[15px]">דוד כהן</span>
-                  <span className="mt-1 flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-md bg-white/15 px-1.5 py-0.5 text-[11px]">
+                <span className="min-w-0">
+                  <span className="block truncate text-[15px]">{name}</span>
+                  {user?.verified && (
+                    <span className="mt-1 inline-flex items-center gap-1 rounded-md bg-white/15 px-1.5 py-0.5 text-[11px]">
                       <IconRosetteDiscountCheck size={13} stroke={1.75} />
                       מאומת
                     </span>
-                    <span className="inline-flex items-center gap-0.5 text-xs">
-                      <IconStar size={13} className="text-accent" /> 4.9
-                    </span>
-                  </span>
+                  )}
                 </span>
               </Link>
             </div>

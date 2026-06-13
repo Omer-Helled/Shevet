@@ -1,29 +1,18 @@
-import { convos } from "@/lib/mock";
+import { IconMessage2 } from "@tabler/icons-react";
+
+export const dynamic = "force-dynamic";
 
 export default function MessagesPage() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4 md:px-6">
       <h1 className="mb-3 text-lg font-medium">הודעות</h1>
-      <div className="divide-y overflow-hidden rounded-xl border bg-surface">
-        {convos.map((c) => (
-          <div key={c.id} className="flex items-center gap-3 px-3 py-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-soft text-sm text-brand-ink">
-              {c.initials}
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <p className="truncate text-sm">{c.name}</p>
-                <span className="shrink-0 text-[11px] text-muted">{c.time}</span>
-              </div>
-              <p className="truncate text-xs text-muted">{c.last}</p>
-            </div>
-            {c.unread ? (
-              <span className="grid size-5 shrink-0 place-items-center rounded-full bg-brand-strong text-[11px] text-white">
-                {c.unread}
-              </span>
-            ) : null}
-          </div>
-        ))}
+      <div className="flex flex-col items-center gap-3 rounded-2xl border bg-surface px-6 py-14 text-center">
+        <span className="grid size-12 place-items-center rounded-full bg-brand-soft text-brand">
+          <IconMessage2 size={24} stroke={1.75} />
+        </span>
+        <p className="max-w-xs text-sm text-muted">
+          עדיין אין הודעות. כשתיצור קשר עם מארח או מתנדב, השיחות יופיעו כאן.
+        </p>
       </div>
     </div>
   );

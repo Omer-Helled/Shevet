@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-// Next.js 16 renamed Middleware to Proxy (same functionality). This refreshes the
-// Supabase auth session on each request so Server Components see a valid user.
+// Routes a logged-out visitor is allowed to reach. Everything else redirects to /login.
+const PUBLIC_PREFIXES = ["/login", "/auth"];
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -27,8 +28,21 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Touch the session so expired tokens get refreshed into the response cookies.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const path = request.nextUrl.pathname;
+  const isPublic = PUBLIC_PREFIXES.some(
+    (p) => path === p || path.startsWith(p + "/"),
+  );
+
+  // Gate the whole app: logged-out visitors only ever see the login screen.
+  if (!user && !isPublic) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/login";
+    return NextResponse.redirect(redirectUrl);
+  }
 
   return response;
 }

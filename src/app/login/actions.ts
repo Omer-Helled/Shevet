@@ -51,7 +51,7 @@ export async function authenticate(
     if (error) return { error: translate(error.message) };
   }
 
-  redirect("/profile");
+  redirect("/");
 }
 
 export async function signOut() {
