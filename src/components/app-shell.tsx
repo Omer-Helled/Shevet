@@ -149,13 +149,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <IconBell size={20} stroke={1.75} />
           </button>
           <ThemeToggle />
-          <button
-            type="button"
+          <Link
+            href="/stay/new"
             className="hidden items-center gap-1.5 rounded-lg bg-brand-strong px-3.5 py-2 text-sm text-white sm:inline-flex"
           >
             <IconPlus size={16} stroke={2} />
             הוסף נכס
-          </button>
+          </Link>
         </header>
 
         <main className="flex-1 pb-24 md:pb-10">{children}</main>

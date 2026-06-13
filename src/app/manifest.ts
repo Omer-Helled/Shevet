@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "הפלטפורמה שמחברת יהודים בכל העולם: לינה, התנדבות וגילוי קהילות.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f6efe2",
-    theme_color: "#1e6f9f",
+    background_color: "#f4f1ec",
+    theme_color: "#234e70",
     lang: "he",
     dir: "rtl",
     icons: [

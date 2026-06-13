@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Shevet">
-  <rect width="512" height="512" rx="112" fill="#1e6f9f"/>
-  <g fill="none" stroke="#c68a3e" stroke-width="26" stroke-linejoin="round">
+  <rect width="512" height="512" rx="112" fill="#234e70"/>
+  <g fill="none" stroke="#be5a37" stroke-width="26" stroke-linejoin="round">
     <path d="M256 120 L366 310 L146 310 Z"/>
     <path d="M256 392 L146 202 L366 202 Z"/>
   </g>
