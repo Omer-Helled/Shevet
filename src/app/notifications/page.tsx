@@ -40,7 +40,7 @@ export default async function NotificationsPage() {
     const { data } = await supabase
       .from("notifications")
       .select(
-        "id,type,read,created_at,post_id,actor:profiles!notifications_actor_id_fkey(first_name,last_name,avatar_url),post:board_items(title)",
+        "id,type,read,created_at,post_id,actor:profiles!notifications_actor_id_fkey(first_name,last_name,avatar_url),post:board_items!notifications_post_id_fkey(title)",
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })

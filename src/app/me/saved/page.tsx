@@ -33,7 +33,7 @@ export default async function SavedPage() {
     const { data } = await supabase
       .from("bookmarks")
       .select(
-        "post:board_items(id,title,place,image_url,created_at,like_count,comment_count)",
+        "post:board_items!bookmarks_post_id_fkey(id,title,place,image_url,created_at,like_count,comment_count)",
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });

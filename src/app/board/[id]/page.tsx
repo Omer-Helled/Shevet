@@ -61,7 +61,7 @@ export default async function PostPage({
   const { data: postData } = await supabase
     .from("board_items")
     .select(
-      "id,title,body,place,kind,image_url,created_at,like_count,comment_count,author:profiles(id,first_name,last_name,avatar_url)",
+      "id,title,body,place,kind,image_url,created_at,like_count,comment_count,author:profiles!board_items_author_id_fkey(id,first_name,last_name,avatar_url)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -72,7 +72,7 @@ export default async function PostPage({
   const { data: commentData } = await supabase
     .from("comments")
     .select(
-      "id,body,image_url,created_at,like_count,author:profiles(id,first_name,last_name,avatar_url)",
+      "id,body,image_url,created_at,like_count,author:profiles!comments_author_id_fkey(id,first_name,last_name,avatar_url)",
     )
     .eq("post_id", id)
     .order("created_at", { ascending: true });

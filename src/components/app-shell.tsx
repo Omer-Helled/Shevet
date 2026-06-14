@@ -47,7 +47,12 @@ function NavLink({
 }) {
   const Icon = item.icon;
   return (
-    <Link href={item.href} onClick={onClick} className={rowClass(active)}>
+    <Link
+      href={item.href}
+      prefetch
+      onClick={onClick}
+      className={rowClass(active)}
+    >
       <Icon size={20} stroke={1.75} className="shrink-0 text-brand" />
       <span>{item.label}</span>
     </Link>
@@ -180,6 +185,7 @@ export function AppShell({
             <Link
               key={item.href}
               href={item.href}
+              prefetch
               className="flex flex-1 flex-col items-center gap-1 py-2 text-[10px]"
             >
               <Icon

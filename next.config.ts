@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "8mb" },
+    // Cache visited pages client-side so switching between tabs is instant.
+    staleTimes: { dynamic: 30, static: 180 },
   },
   images: {
     remotePatterns: [
