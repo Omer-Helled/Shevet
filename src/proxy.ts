@@ -11,6 +11,14 @@ export async function proxy(request: NextRequest) {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return response;
 
+  const path = request.nextUrl.pathname;
+  const isPublic = PUBLIC_PREFIXES.some(
+    (p) => path === p || path.startsWith(p + "/"),
+  );
+
+  // Public pages don't need the (network) auth check — skip it for speed.
+  if (isPublic) return response;
+
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() {
@@ -32,13 +40,8 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-  const isPublic = PUBLIC_PREFIXES.some(
-    (p) => path === p || path.startsWith(p + "/"),
-  );
-
   // Gate the whole app: logged-out visitors only ever see the login screen.
-  if (!user && !isPublic) {
+  if (!user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
     return NextResponse.redirect(redirectUrl);

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { IconRosetteDiscountCheck, IconLogout } from "@tabler/icons-react";
 import { getUser, getProfile } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
+import { Avatar } from "@/components/avatar";
 import { ProfileForm } from "./profile-form";
 
 export const dynamic = "force-dynamic";
@@ -15,15 +16,12 @@ export default async function ProfilePage() {
     .filter(Boolean)
     .join(" ");
   const display = name || user.email || "משתמש";
-  const initials = (name || user.email || "?").trim().slice(0, 2);
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4 md:px-6">
       <div className="rounded-2xl border bg-surface p-5">
         <div className="flex items-center gap-4">
-          <span className="grid size-16 shrink-0 place-items-center rounded-full bg-accent text-xl text-[#2b1b05]">
-            {initials}
-          </span>
+          <Avatar name={display} src={profile?.avatar_url} size={64} />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h1 className="truncate text-lg font-medium">{display}</h1>
@@ -37,9 +35,7 @@ export default async function ProfilePage() {
             <p className="mt-0.5 truncate text-xs text-muted">{user.email}</p>
           </div>
         </div>
-        {profile?.bio && (
-          <p className="mt-4 text-sm text-muted">{profile.bio}</p>
-        )}
+        {profile?.bio && <p className="mt-4 text-sm text-muted">{profile.bio}</p>}
       </div>
 
       <ProfileForm profile={profile} />

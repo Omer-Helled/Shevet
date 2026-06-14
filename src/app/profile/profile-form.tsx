@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, type ChangeEvent } from "react";
+import { IconCamera } from "@tabler/icons-react";
 import { updateProfile, type ProfileState } from "./actions";
 import type { Profile } from "@/lib/auth";
 
@@ -12,10 +13,43 @@ export function ProfileForm({ profile }: { profile: Profile | null }) {
     updateProfile,
     undefined,
   );
+  const name =
+    [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") || "מש";
+  const [preview, setPreview] = useState<string | null>(profile?.avatar_url ?? null);
+
+  function onAvatar(e: ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (f) setPreview(URL.createObjectURL(f));
+  }
 
   return (
     <form action={action} className="mt-4 rounded-2xl border bg-surface p-5">
       <h2 className="mb-3 text-sm font-medium">עריכת פרופיל</h2>
+
+      <label className="mx-auto mb-4 block w-fit cursor-pointer">
+        <span className="relative block size-20 overflow-hidden rounded-full bg-accent">
+          {preview ? (
+            <span
+              className="block size-full bg-cover bg-center"
+              style={{ backgroundImage: `url(${preview})` }}
+            />
+          ) : (
+            <span className="grid size-full place-items-center text-xl text-[#3a1c0e]">
+              {name.trim().slice(0, 2)}
+            </span>
+          )}
+          <span className="absolute inset-x-0 bottom-0 grid place-items-center bg-black/40 py-1 text-white">
+            <IconCamera size={16} stroke={1.75} />
+          </span>
+        </span>
+        <input
+          type="file"
+          name="avatar"
+          accept="image/*"
+          onChange={onAvatar}
+          className="hidden"
+        />
+      </label>
 
       <div className="grid grid-cols-2 gap-3">
         <input

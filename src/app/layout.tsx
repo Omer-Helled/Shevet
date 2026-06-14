@@ -37,8 +37,8 @@ export default async function RootLayout({
   const user = profile
     ? {
         name: name || "משתמש",
-        initials: (name || "מש").trim().slice(0, 2),
         verified: Boolean(profile.is_verified),
+        avatarUrl: profile.avatar_url,
       }
     : null;
 

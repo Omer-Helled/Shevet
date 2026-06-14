@@ -15,9 +15,14 @@ import {
 } from "@tabler/icons-react";
 import { mainNav, toolNav, drawerGroups, type NavItem } from "@/lib/nav";
 import { ThemeToggle } from "./theme-toggle";
+import { Avatar } from "./avatar";
 import { signOut } from "@/app/login/actions";
 
-type AppUser = { name: string; initials: string; verified: boolean } | null;
+type AppUser = {
+  name: string;
+  verified: boolean;
+  avatarUrl: string | null;
+} | null;
 
 const cx = (...c: Array<string | false | undefined>) =>
   c.filter(Boolean).join(" ");
@@ -100,7 +105,6 @@ export function AppShell({
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const name = user?.name ?? "משתמש";
-  const initials = user?.initials ?? "מש";
 
   return (
     <div className="flex min-h-dvh">
@@ -127,9 +131,7 @@ export function AppShell({
           href="/profile"
           className="m-3 flex items-center gap-2.5 rounded-lg border p-2.5"
         >
-          <span className="grid size-8 place-items-center rounded-full bg-accent text-sm text-[#3a1c0e]">
-            {initials}
-          </span>
+          <Avatar name={name} src={user?.avatarUrl} size={32} />
           <span className="flex-1 truncate text-sm">{name}</span>
           <IconSettings size={18} stroke={1.75} className="text-muted" />
         </Link>
@@ -221,9 +223,7 @@ export function AppShell({
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-3"
               >
-                <span className="grid size-11 place-items-center rounded-full bg-accent text-base text-[#3a1c0e]">
-                  {initials}
-                </span>
+                <Avatar name={name} src={user?.avatarUrl} size={44} />
                 <span className="min-w-0">
                   <span className="block truncate text-[15px]">{name}</span>
                   {user?.verified && (
