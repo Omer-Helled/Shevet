@@ -7,6 +7,7 @@ import {
   IconPackage,
   IconPlus,
   IconLayoutGrid,
+  IconMessageCircle,
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -39,6 +40,8 @@ type Item = {
   kind: BoardKind;
   image_url: string | null;
   created_at: string;
+  like_count: number;
+  comment_count: number;
 };
 
 export default async function BoardPage({
@@ -53,7 +56,7 @@ export default async function BoardPage({
     const supabase = await createClient();
     let query = supabase
       .from("board_items")
-      .select("id,title,place,kind,image_url,created_at")
+      .select("id,title,place,kind,image_url,created_at,like_count,comment_count")
       .order("created_at", { ascending: false });
     if (kind) query = query.eq("kind", kind);
     const { data } = await query;
@@ -111,9 +114,10 @@ export default async function BoardPage({
           {items.map((item) => {
             const Icon = kindIcon[item.kind];
             return (
-              <article
+              <Link
                 key={item.id}
-                className="overflow-hidden rounded-xl border bg-surface"
+                href={`/board/${item.id}`}
+                className="block overflow-hidden rounded-xl border bg-surface transition-colors hover:border-brand"
               >
                 <div className="relative h-40 bg-surface-2">
                   {item.image_url ? (
@@ -140,8 +144,18 @@ export default async function BoardPage({
                     <span className="truncate">{item.place ?? ""}</span>
                     <span className="shrink-0">{relativeTime(item.created_at)}</span>
                   </div>
+                  <div className="mt-2 flex items-center gap-4 border-t pt-2 text-xs text-muted">
+                    <span className="flex items-center gap-1">
+                      <IconHeart size={15} stroke={1.75} />
+                      {item.like_count}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <IconMessageCircle size={15} stroke={1.75} />
+                      {item.comment_count}
+                    </span>
+                  </div>
                 </div>
-              </article>
+              </Link>
             );
           })}
         </div>
