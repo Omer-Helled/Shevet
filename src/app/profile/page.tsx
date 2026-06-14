@@ -1,5 +1,11 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { IconRosetteDiscountCheck, IconLogout } from "@tabler/icons-react";
+import {
+  IconRosetteDiscountCheck,
+  IconLogout,
+  IconBookmark,
+  IconChevronLeft,
+} from "@tabler/icons-react";
 import { getUser, getProfile } from "@/lib/auth";
 import { signOut } from "@/app/login/actions";
 import { Avatar } from "@/components/avatar";
@@ -37,6 +43,15 @@ export default async function ProfilePage() {
         </div>
         {profile?.bio && <p className="mt-4 text-sm text-muted">{profile.bio}</p>}
       </div>
+
+      <Link
+        href="/me/saved"
+        className="mt-4 flex items-center gap-3 rounded-2xl border bg-surface px-4 py-3 text-sm transition-colors hover:border-brand"
+      >
+        <IconBookmark size={18} stroke={1.75} className="text-brand" />
+        הפוסטים השמורים שלי
+        <IconChevronLeft size={18} stroke={1.75} className="ms-auto text-muted" />
+      </Link>
 
       <ProfileForm profile={profile} />
 

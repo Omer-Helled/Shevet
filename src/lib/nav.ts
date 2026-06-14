@@ -22,7 +22,12 @@ type IconType = ComponentType<{
   className?: string;
 }>;
 
-export type NavItem = { href: string; label: string; icon: IconType };
+export type NavItem = {
+  href: string;
+  label: string;
+  icon: IconType;
+  ready?: boolean;
+};
 export type NavGroup = { title: string; items: NavItem[] };
 
 // The five primary destinations — bottom nav on mobile, top of the sidebar on desktop.
@@ -48,7 +53,7 @@ export const drawerGroups: NavGroup[] = [
     items: [
       { href: "/me/listings", label: "הנכסים והמודעות שלי", icon: IconBuildingStore },
       { href: "/me/requests", label: "הבקשות שלי", icon: IconArrowsExchange2 },
-      { href: "/me/saved", label: "שמורים", icon: IconBookmark },
+      { href: "/me/saved", label: "שמורים", icon: IconBookmark, ready: true },
     ],
   },
   { title: "כלים", items: toolNav },

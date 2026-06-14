@@ -65,6 +65,34 @@ export async function toggleCommentLike(formData: FormData) {
   if (postId) revalidatePath(`/board/${postId}`);
 }
 
+export async function toggleBookmark(formData: FormData) {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  const postId = String(formData.get("post_id") || "");
+  if (!postId) return;
+
+  const supabase = await createClient();
+  const { data: existing } = await supabase
+    .from("bookmarks")
+    .select("post_id")
+    .eq("post_id", postId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from("bookmarks")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", user.id);
+  } else {
+    await supabase.from("bookmarks").insert({ post_id: postId, user_id: user.id });
+  }
+
+  revalidatePath(`/board/${postId}`);
+  revalidatePath("/me/saved");
+}
+
 export async function addComment(
   _prev: CommentState,
   formData: FormData,

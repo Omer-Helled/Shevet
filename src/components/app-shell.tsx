@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   IconMenu2,
   IconX,
-  IconBell,
   IconSearch,
   IconMapPin,
   IconRosetteDiscountCheck,
@@ -16,6 +15,7 @@ import {
 import { mainNav, toolNav, drawerGroups, type NavItem } from "@/lib/nav";
 import { ThemeToggle } from "./theme-toggle";
 import { Avatar } from "./avatar";
+import { NotificationBell } from "./notification-bell";
 import { signOut } from "@/app/login/actions";
 
 type AppUser = {
@@ -164,13 +164,7 @@ export function AppShell({
             />
           </form>
           <div className="flex-1 sm:hidden" />
-          <button
-            type="button"
-            aria-label="התראות"
-            className="grid size-9 place-items-center rounded-lg text-muted hover:bg-brand-soft hover:text-brand"
-          >
-            <IconBell size={20} stroke={1.75} />
-          </button>
+          <NotificationBell />
           <ThemeToggle />
         </header>
 
@@ -242,9 +236,18 @@ export function AppShell({
                     {group.title}
                   </p>
                   <div className="flex flex-col gap-0.5">
-                    {group.items.map((item) => (
-                      <NavButton key={item.href} item={item} />
-                    ))}
+                    {group.items.map((item) =>
+                      item.ready ? (
+                        <NavLink
+                          key={item.href}
+                          item={item}
+                          active={false}
+                          onClick={() => setOpen(false)}
+                        />
+                      ) : (
+                        <NavButton key={item.href} item={item} />
+                      ),
+                    )}
                   </div>
                 </div>
               ))}

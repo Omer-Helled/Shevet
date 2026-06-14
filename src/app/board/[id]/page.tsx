@@ -6,6 +6,9 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import { Avatar } from "@/components/avatar";
 import { LikeButton } from "@/components/like-button";
+import { BookmarkButton } from "@/components/bookmark-button";
+import { ShareButton } from "@/components/share-button";
+import { RealtimeRefresh } from "@/components/realtime-refresh";
 import { boardKindLabel, type BoardKind } from "@/lib/mock";
 import { relativeTime } from "@/lib/time";
 import { CommentForm } from "./comment-form";
@@ -77,6 +80,7 @@ export default async function PostPage({
 
   const user = await getUser();
   let likedPost = false;
+  let saved = false;
   let likedComments = new Set<string>();
   if (user) {
     const { data: pl } = await supabase
@@ -96,10 +100,20 @@ export default async function PostPage({
         .eq("user_id", user.id);
       likedComments = new Set((cl ?? []).map((r) => r.comment_id as string));
     }
+
+    const { data: bm } = await supabase
+      .from("bookmarks")
+      .select("post_id")
+      .eq("post_id", id)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    saved = Boolean(bm);
   }
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-4 md:px-6">
+      <RealtimeRefresh table="comments" filter={`post_id=eq.${post.id}`} />
+      <RealtimeRefresh table="post_likes" filter={`post_id=eq.${post.id}`} />
       <div className="mb-4 flex items-center gap-2">
         <Link
           href="/board"
@@ -152,7 +166,7 @@ export default async function PostPage({
           </div>
         )}
 
-        <div className="flex items-center gap-5 border-t px-4 py-2.5 text-sm">
+        <div className="flex flex-wrap items-center gap-4 border-t px-4 py-2.5 text-sm">
           <LikeButton
             action={toggleLike}
             hidden={{ post_id: post.id }}
@@ -163,6 +177,8 @@ export default async function PostPage({
             <IconMessageCircle size={19} stroke={1.75} />
             {post.comment_count}
           </span>
+          <BookmarkButton postId={post.id} saved={saved} />
+          <ShareButton />
         </div>
       </article>
 
