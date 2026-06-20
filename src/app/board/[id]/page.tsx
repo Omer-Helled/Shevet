@@ -58,56 +58,63 @@ export default async function PostPage({
   if (!isSupabaseConfigured()) notFound();
 
   const supabase = await createClient();
-  const { data: postData } = await supabase
-    .from("board_items")
-    .select(
-      "id,title,body,place,kind,image_url,created_at,like_count,comment_count,author:profiles!board_items_author_id_fkey(id,first_name,last_name,avatar_url)",
-    )
-    .eq("id", id)
-    .maybeSingle();
 
-  if (!postData) notFound();
-  const post = postData as unknown as Post;
+  // Fetch the post, its comments and the current user in parallel.
+  const [postRes, commentRes, user] = await Promise.all([
+    supabase
+      .from("board_items")
+      .select(
+        "id,title,body,place,kind,image_url,created_at,like_count,comment_count,author:profiles!board_items_author_id_fkey(id,first_name,last_name,avatar_url)",
+      )
+      .eq("id", id)
+      .maybeSingle(),
+    supabase
+      .from("comments")
+      .select(
+        "id,body,image_url,created_at,like_count,author:profiles!comments_author_id_fkey(id,first_name,last_name,avatar_url)",
+      )
+      .eq("post_id", id)
+      .order("created_at", { ascending: true }),
+    getUser(),
+  ]);
 
-  const { data: commentData } = await supabase
-    .from("comments")
-    .select(
-      "id,body,image_url,created_at,like_count,author:profiles!comments_author_id_fkey(id,first_name,last_name,avatar_url)",
-    )
-    .eq("post_id", id)
-    .order("created_at", { ascending: true });
-  const comments = (commentData as unknown as Comment[]) ?? [];
+  if (!postRes.data) notFound();
+  const post = postRes.data as unknown as Post;
+  const comments = (commentRes.data as unknown as Comment[]) ?? [];
 
-  const user = await getUser();
   let likedPost = false;
   let saved = false;
   let likedComments = new Set<string>();
   if (user) {
-    const { data: pl } = await supabase
-      .from("post_likes")
-      .select("post_id")
-      .eq("post_id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    likedPost = Boolean(pl);
-
     const ids = comments.map((c) => c.id);
-    if (ids.length) {
-      const { data: cl } = await supabase
-        .from("comment_likes")
-        .select("comment_id")
-        .in("comment_id", ids)
-        .eq("user_id", user.id);
-      likedComments = new Set((cl ?? []).map((r) => r.comment_id as string));
+    const [pl, bm, cl] = await Promise.all([
+      supabase
+        .from("post_likes")
+        .select("post_id")
+        .eq("post_id", id)
+        .eq("user_id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("bookmarks")
+        .select("post_id")
+        .eq("post_id", id)
+        .eq("user_id", user.id)
+        .maybeSingle(),
+      ids.length
+        ? supabase
+            .from("comment_likes")
+            .select("comment_id")
+            .in("comment_id", ids)
+            .eq("user_id", user.id)
+        : null,
+    ]);
+    likedPost = Boolean(pl.data);
+    saved = Boolean(bm.data);
+    if (cl?.data) {
+      likedComments = new Set(
+        (cl.data as { comment_id: string }[]).map((r) => r.comment_id),
+      );
     }
-
-    const { data: bm } = await supabase
-      .from("bookmarks")
-      .select("post_id")
-      .eq("post_id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    saved = Boolean(bm);
   }
 
   return (

@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { IconShare, IconCheck } from "@tabler/icons-react";
 
-export function ShareButton() {
+export function ShareButton({ path }: { path?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
-    const url = window.location.href;
+    const url = path ? `${window.location.origin}${path}` : window.location.href;
     if (navigator.share) {
       try {
         await navigator.share({ url });

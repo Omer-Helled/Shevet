@@ -173,11 +173,11 @@ export function AppShell({
           <ThemeToggle />
         </header>
 
-        <main className="flex-1 pb-24 md:pb-10">{children}</main>
+        <main className="flex-1 pb-28 md:pb-10">{children}</main>
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t bg-surface md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t bg-surface pt-1 pb-[max(env(safe-area-inset-bottom),0.5rem)] md:hidden">
         {mainNav.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
