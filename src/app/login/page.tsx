@@ -11,9 +11,14 @@ const features = [
   { icon: IconMapPin, label: "גילוי מוקדים וקהילות יהודיות" },
 ];
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const user = await getUser();
   if (user) redirect("/");
+  const { error } = await searchParams;
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center px-5 py-10">
@@ -52,6 +57,13 @@ export default async function LoginPage() {
           );
         })}
       </div>
+
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-400">
+          ההתחברות לא הושלמה. נסה שוב — ואם זה חוזר, ייתכן שצריך לאשר את כתובת
+          ההפניה בהגדרות. ({error})
+        </div>
+      )}
 
       <div className="rounded-2xl border bg-surface p-5">
         <AuthForm />
